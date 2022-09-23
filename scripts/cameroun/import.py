@@ -1,5 +1,5 @@
 """
-Importer des stations météorologiques d'Environnement Canada
+Importer des stations météorologiques Cameroun
 """
 
 import os
@@ -17,53 +17,45 @@ CSV_FILE = (
     + os.sep
     + "scripts"
     + os.sep
-    + "canada"
+    + "cameroun"
     + os.sep
     + "stations.csv"
 )
 
-# Min. last year to prevent inactive stations from being imported
+# Min. l'année dernière pour empêcher l'importation de stations inactives
 MIN_LAST_YEAR = 2015
 
 
 def province_code(name: str) -> str:
     """
-    Convert province name to code
+    Convertir le nom de la region en code
     """
 
-    if name == "ALBERTA":
-        return "AB"
-    elif name == "BRITISH COLUMBIA":
-        return "BC"
-    elif name == "MANITOBA":
-        return "MB"
-    elif name == "NEW BRUNSWICK":
-        return "NB"
-    elif name == "NEWFOUNDLAND":
-        return "NL"
-    elif name == "NOVA SCOTIA":
-        return "NS"
-    elif name == "NORTHWEST TERRITORIES":
-        return "NT"
-    elif name == "NUNAVUT":
-        return "NU"
-    elif name == "ONTARIO":
-        return "ON"
-    elif name == "PRINCE EDWARD ISLAND":
-        return "PE"
-    elif name == "QUEBEC":
-        return "QC"
-    elif name == "SASKATCHEWAN":
-        return "SK"
-    elif name == "YUKON TERRITORY":
-        return "YT"
+    if name == "ADAMAOUA":
+        return "AD"
+    elif name == "CENTRE":
+        return "CE"
+    elif name == "EST":
+        return "ES"
+    elif name == "EXTREME-NORD":
+        return "EN"
+    elif name == "LITTORAL":
+        return "LT"
+    elif name == "NORD":
+        return "NO"
+    elif name == "NORD-OUEST":
+        return "NW"
+    elif name == "OUEST":
+        return "OU"
+    elif name == "SUD":
+        return "SU"
+    elif name == "SURD-OUEST":
+        return "SW"
     else:
         return None
 
 
-# Read Canadian station inventory
-# (should be updated before importing)
-# https://drive.google.com/drive/folders/1WJCDEU34c60IfOnG4rv5EPZ4IhhW9vZH
+# Lire l'inventaire des stations Cameroun
 inventory = pd.read_csv(
     CSV_FILE,
     usecols=[0, 1, 3, 4, 6, 7, 10, 12],
@@ -89,7 +81,7 @@ for index, row in inventory.iterrows():
         # Collect meta data
         data = {
             "name": {"en": capwords(row["name"])},
-            "country": "CA",
+            "country": "CM",
             "region": province_code(str(row["province"])),
             "identifiers": {
                 "national": str(row["id"]),
@@ -104,10 +96,10 @@ for index, row in inventory.iterrows():
             },
         }
 
-        # Get potential duplicate station
+        # Obtenir une station en double potentielle
         duplicate = find_duplicate(data)
 
-        # Check if duplicate found
+        # Vérifiez si un doublon a été trouvé
         if isinstance(duplicate, dict):
             if "distance" in duplicate and duplicate["distance"] > 100:
                 continue
